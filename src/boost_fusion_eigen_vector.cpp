@@ -217,7 +217,7 @@ struct wrapper_op
         {
             boost::fusion::for_each (boost::fusion::zip_view<type_zip>
                                      (type_zip (v0[i], v1[i], v2[i])),
-                                     demo::add ());
+                                     FUNC ());
         }
     }
 };
@@ -298,7 +298,7 @@ int main()
     std::cout << std::endl;
 
     // Scalar multiplication test
-    boost::fusion::for_each (eig_w1, boost::bind<void> (demo::wrapper_op<demo::scalar_mult<REALTYPE> > (), _1, 2.0));
+    boost::fusion::for_each (eig_w1, boost::bind<void> (demo::wrapper_op<demo::scalar_mult<REALTYPE> > (), _1, (REALTYPE)2.0));
     std::cout << "w1 *= 2:" << std::endl;
     boost::fusion::for_each (eig_w1, demo::wrapper_op<demo::print> ());
     std::cout << std::endl;
