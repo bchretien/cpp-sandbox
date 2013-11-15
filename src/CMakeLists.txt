@@ -6,3 +6,5 @@ PKG_CONFIG_USE_DEPENDENCY(boost_fusion_eigen eigen3)
 ADD_EXECUTABLE(boost_fusion_eigen_vector "${CMAKE_CURRENT_SOURCE_DIR}/boost_fusion_eigen_vector.cpp")
 PKG_CONFIG_USE_DEPENDENCY(boost_fusion_eigen_vector eigen3)
 
+# Test 3: using Boost preprocessor to access variables
+ADD_EXECUTABLE(boost_preprocessor_names "${CMAKE_CURRENT_SOURCE_DIR}/boost_preprocessor_names.cpp")

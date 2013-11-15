@@ -2,6 +2,7 @@
 #include <vector>
 #include <assert.h>
 
+// Boost
 #include <boost/bind.hpp>
 
 #include <boost/fusion/include/at_c.hpp>
@@ -10,6 +11,10 @@
 #include <boost/fusion/include/zip_view.hpp>
 #include <boost/fusion/include/vector.hpp>
 
+#include <boost/preprocessor/array/elem.hpp>
+#include <boost/preprocessor/iteration/local.hpp>
+
+// Eigen
 #include <Eigen/Core>
 
 #define SIZE1 2
@@ -52,7 +57,9 @@ struct EigenMap
 template <typename T>
 struct data1_eigen
 {
-    data1_eigen (data1_t<T>& src)
+    typedef data1_t<T> base_type;
+
+    data1_eigen (base_type& src)
         : ar1 (typename EigenMap<T>::type (&src.ar1[0][0], SIZE1*SIZE2)),
           ar2 (typename EigenMap<T>::type (&src.ar2[0][0], SIZE1*SIZE2))
     {
@@ -65,7 +72,9 @@ struct data1_eigen
 template <typename T>
 struct data2_eigen
 {
-    data2_eigen (data2_t<T>& src)
+    typedef data2_t<T> base_type;
+
+    data2_eigen (base_type& src)
         : ar1 (typename EigenMap<T>::type (&src.ar1[0][0], SIZE1*SIZE2)),
           ar2 (typename EigenMap<T>::type (&src.ar2[0][0], SIZE1*SIZE2))
     {
@@ -75,28 +84,53 @@ struct data2_eigen
     typename EigenMap<T>::type ar2;
 };
 
+
+#define N_DATA                   2
+#define DATA_NAMES               (N_DATA, (data1, data2))
+#define DATA_TYPES               (N_DATA, (data1_eigen<T>, data2_eigen<T>))
+
+#define GET_DATA_NAME(n)         BOOST_PP_ARRAY_ELEM(n, DATA_NAMES)
+#define GET_SRC_DATA_NAME(src,n) src.GET_DATA_NAME(n)
+#define GET_DATA_TYPE(n)         BOOST_PP_ARRAY_ELEM(n, DATA_TYPES)
+#define WRAPPER_EIGEN_VAR(n)     std::vector<GET_DATA_TYPE(n)> GET_DATA_NAME(n)
+
 // Wrapper of Eigen Maps applied to data structures
-// TODO: use metaprogramming to reduce code duplication
+// Three lines only need to be updated when data vectors are added:
+//   - N_DATA: the number of data vectors
+//   - DATA_NAMES: the names of the variables holding these vectors
+//   - DATA_TYPES: the types of the vectors
 template <typename T>
 struct wrapper_eigen
 {
-    wrapper_eigen (wrapper<T>& src)
+    template <typename U, typename V>
+    void prepare_map (std::vector<U>& src_data, std::vector<V>& dst_data)
     {
-        for (typename std::vector<data1_t<T> >::iterator
-             it  = src.data1.begin ();
-             it != src.data1.end ();
+        for (typename std::vector<typename V::base_type>::iterator
+             it  = src_data.begin ();
+             it != src_data.end ();
              ++it)
-            data1.push_back (data1_eigen<T> (*it));
-
-        for (typename std::vector<data2_t<T> >::iterator
-             it  = src.data2.begin ();
-             it != src.data2.end ();
-             ++it)
-            data2.push_back (data2_eigen<T> (*it));
+            dst_data.push_back (V (*it));
     }
 
-    std::vector<data1_eigen<T> > data1;
-    std::vector<data2_eigen<T> > data2;
+    wrapper_eigen (wrapper<T>& src)
+    {
+        // PREPROCESSOR LOOP FOR THE PREPARATION OF THE EIGEN MAPS
+        // What macro to call in the loop
+        #define BOOST_PP_LOCAL_MACRO(n)   \
+            prepare_map (GET_SRC_DATA_NAME(src,n), GET_DATA_NAME(n));
+        // Loop limits (from 0 to N_DATA)
+        #define BOOST_PP_LOCAL_LIMITS     (0,N_DATA-1)
+        // Execute the loop
+        #include BOOST_PP_LOCAL_ITERATE()
+    }
+
+    // PREPROCESSOR LOOP FOR THE DEFINITION OF THE VARIABLES
+    // What macro to call in the loop
+    #define BOOST_PP_LOCAL_MACRO(n)   WRAPPER_EIGEN_VAR(n);
+    // Loop limits (from 0 to N_DATA)
+    #define BOOST_PP_LOCAL_LIMITS     (0,N_DATA-1)
+    // Execute the loop
+    #include BOOST_PP_LOCAL_ITERATE()
 };
 
 // Print operator
