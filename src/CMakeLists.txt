@@ -9,10 +9,18 @@ PKG_CONFIG_USE_DEPENDENCY(boost_fusion_eigen_vector eigen3)
 # Test 3: using Boost preprocessor to access variables
 ADD_EXECUTABLE(boost_preprocessor_names "${CMAKE_CURRENT_SOURCE_DIR}/boost_preprocessor_names.cpp")
 
-# Test 4: Boost shared memory vector (interprocess)
+# Test 4: Boost shared memory array (interprocess)
 ADD_EXECUTABLE(boost_shared_memory_array "${CMAKE_CURRENT_SOURCE_DIR}/boost_shared_memory_array.cpp")
 TARGET_LINK_LIBRARIES(boost_shared_memory_array pthread rt)
 
 # Test 5: Boost shared memory vector (interprocess)
 ADD_EXECUTABLE(boost_shared_memory_vector "${CMAKE_CURRENT_SOURCE_DIR}/boost_shared_memory_vector.cpp")
 TARGET_LINK_LIBRARIES(boost_shared_memory_vector pthread rt)
+
+# Test 6: Boost graph
+ADD_EXECUTABLE(boost_graph "${CMAKE_CURRENT_SOURCE_DIR}/boost_graph.cpp")
+ADD_CUSTOM_TARGET(
+    boost_graph_run
+    COMMAND ./bin/boost_graph && dot -Tpng graph.dot > graph.png && feh graph.png
+    DEPENDS boost_graph
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
