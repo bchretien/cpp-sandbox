@@ -24,3 +24,6 @@ ADD_CUSTOM_TARGET(
     COMMAND ./bin/boost_graph && dot -Tpng graph.dot > graph.png && feh graph.png
     DEPENDS boost_graph
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+
+# Test 7: gcc ICE
+ADD_EXECUTABLE(gcc_ice "${CMAKE_CURRENT_SOURCE_DIR}/gcc_ice.cpp")
