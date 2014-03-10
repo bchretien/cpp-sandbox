@@ -27,3 +27,11 @@ ADD_CUSTOM_TARGET(
 
 # Test 7: gcc ICE
 ADD_EXECUTABLE(gcc_ice "${CMAKE_CURRENT_SOURCE_DIR}/gcc_ice.cpp")
+
+# Test 8: Eigen QR decomposition
+ADD_EXECUTABLE(eigen_qr "${CMAKE_CURRENT_SOURCE_DIR}/eigen_qr.cpp")
+PKG_CONFIG_USE_DEPENDENCY(eigen_qr eigen3)
+
+# Test 9: using Boost preprocessor to generate multiple functions
+ADD_EXECUTABLE(boost_preprocessor_functions "${CMAKE_CURRENT_SOURCE_DIR}/boost_preprocessor_functions.cpp")
+
