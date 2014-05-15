@@ -35,3 +35,15 @@ PKG_CONFIG_USE_DEPENDENCY(eigen_qr eigen3)
 # Test 9: using Boost preprocessor to generate multiple functions
 ADD_EXECUTABLE(boost_preprocessor_functions "${CMAKE_CURRENT_SOURCE_DIR}/boost_preprocessor_functions.cpp")
 
+# Test 10: test Boost logger
+ADD_EXECUTABLE(boost_logger "${CMAKE_CURRENT_SOURCE_DIR}/boost_logger.cpp")
+SET_TARGET_PROPERTIES(boost_logger PROPERTIES COMPILE_FLAGS -DBOOST_LOG_DYN_LINK)
+TARGET_LINK_LIBRARIES(boost_logger boost_log boost_log_setup boost_system
+                                   boost_filesystem boost_date_time
+                                   boost_thread pthread)
+ADD_CUSTOM_TARGET(
+    boost_logger_run
+    COMMAND ./bin/boost_logger && cat test.log
+    DEPENDS boost_logger
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+
