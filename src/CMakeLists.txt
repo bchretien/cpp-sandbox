@@ -47,3 +47,6 @@ ADD_CUSTOM_TARGET(
     DEPENDS boost_logger
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
+# Test 11: bug in Eigen's polynomial solver
+ADD_EXECUTABLE(eigen_poly_bug "${CMAKE_CURRENT_SOURCE_DIR}/eigen_poly_bug.cpp")
+PKG_CONFIG_USE_DEPENDENCY(eigen_poly_bug eigen3)
