@@ -50,3 +50,6 @@ ADD_CUSTOM_TARGET(
 # Test 11: bug in Eigen's polynomial solver
 ADD_EXECUTABLE(eigen_poly_bug "${CMAKE_CURRENT_SOURCE_DIR}/eigen_poly_bug.cpp")
 PKG_CONFIG_USE_DEPENDENCY(eigen_poly_bug eigen3)
+
+# Test 12: parameter testing (mixin/policy-based)
+ADD_EXECUTABLE(parameters "${CMAKE_CURRENT_SOURCE_DIR}/parameters.cpp")
