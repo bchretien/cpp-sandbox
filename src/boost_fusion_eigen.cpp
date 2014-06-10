@@ -27,14 +27,20 @@ struct EigenMap
     typedef Eigen::Map<Eigen::Matrix<T, Eigen::Dynamic, 1> > type;
 };
 
+template<typename T>
+struct const_EigenMap
+{
+    typedef Eigen::Map<const Eigen::Matrix<T, Eigen::Dynamic, 1> > type;
+};
+
 // Eigen Maps applied to data structures
 template<typename T>
 struct data_eigen
 {
     template <int SIZE1, int SIZE2>
-    data_eigen(data<T,SIZE1,SIZE2>& src)
-        : ar1(typename EigenMap<T>::type(&src.ar1[0][0], SIZE1*SIZE2)),
-          ar2(typename EigenMap<T>::type(&src.ar2[0][0], SIZE1*SIZE2))
+    data_eigen (data<T,SIZE1,SIZE2>& src)
+        : ar1 (typename EigenMap<T>::type (&src.ar1[0][0], SIZE1*SIZE2)),
+          ar2 (typename EigenMap<T>::type (&src.ar2[0][0], SIZE1*SIZE2))
     {
     }
 
@@ -42,12 +48,25 @@ struct data_eigen
     typename EigenMap<T>::type ar2;
 };
 
+template<typename T>
+struct const_data_eigen
+{
+    template <int SIZE1, int SIZE2>
+    const_data_eigen (const data<T,SIZE1,SIZE2>& src)
+        : ar1 (typename const_EigenMap<T>::type (&src.ar1[0][0], SIZE1*SIZE2)),
+          ar2 (typename const_EigenMap<T>::type (&src.ar2[0][0], SIZE1*SIZE2))
+    {
+    }
+
+    typename const_EigenMap<T>::type ar1;
+    typename const_EigenMap<T>::type ar2;
+};
 
 // Print operator
 struct print
 {
-    template<typename T>
-    void operator()(const Eigen::Map<Eigen::Matrix<T, Eigen::Dynamic, 1> >& t) const
+    template<typename U>
+    void operator() (const U& t) const
     {
         Eigen::IOFormat CommaInitFmt(Eigen::StreamPrecision,
                                      Eigen::DontAlignCols,
@@ -88,6 +107,14 @@ BOOST_FUSION_ADAPT_TPL_STRUCT
     (typename demo::EigenMap<T>::type, ar2)
 )
 
+BOOST_FUSION_ADAPT_TPL_STRUCT
+(
+    (T),
+    (demo::const_data_eigen) (T),
+    (typename demo::const_EigenMap<T>::type, ar1)
+    (typename demo::const_EigenMap<T>::type, ar2)
+)
+
 int main()
 {
     typedef float REALTYPE;
@@ -104,7 +131,7 @@ int main()
         }
     demo::data<REALTYPE, SIZE1, SIZE2> d2;
     demo::data<REALTYPE, SIZE1, SIZE2> d3;
-    memset(&d3, 0, sizeof(demo::data<REALTYPE, SIZE1, SIZE2>));
+    memset (&d3, 0, sizeof(demo::data<REALTYPE, SIZE1, SIZE2>));
 
     for (uint i = 0; i < SIZE1; ++i)
         for (uint j = 0; j < SIZE2; ++j)
@@ -115,7 +142,7 @@ int main()
 
     // Eigen::Map + BOOST_FUSION_ADAPT_TPL_STRUCT
     demo::data_eigen<REALTYPE> eig_d1 (d1);
-    demo::data_eigen<REALTYPE> eig_d2 (d2);
+    const demo::const_data_eigen<REALTYPE> eig_d2 (d2);
     demo::data_eigen<REALTYPE> eig_d3 (d3);
 
     // Print test
@@ -132,11 +159,15 @@ int main()
 
     // Addition test
     typedef demo::data_eigen<REALTYPE>& vector_ref;
-    typedef boost::fusion::vector<vector_ref,vector_ref,vector_ref> data_zip;
+    typedef const demo::const_data_eigen<REALTYPE>& const_vector_ref;
+
+    typedef boost::fusion::vector<vector_ref,
+                                  const_vector_ref,
+                                  vector_ref> data_zip;
 
     boost::fusion::for_each (boost::fusion::zip_view<data_zip>
                              (data_zip (eig_d1, eig_d2, eig_d3)),
-                             demo::add());
+                             demo::add ());
 
     std::cout << "d2:" << std::endl;
     boost::fusion::for_each (eig_d2, demo::print ());
