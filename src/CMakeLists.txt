@@ -53,3 +53,6 @@ PKG_CONFIG_USE_DEPENDENCY(eigen_poly_bug eigen3)
 
 # Test 12: parameter testing (mixin/policy-based)
 ADD_EXECUTABLE(parameters "${CMAKE_CURRENT_SOURCE_DIR}/parameters.cpp")
+
+# Test 13: multidimension array pointer/reference
+ADD_EXECUTABLE(multimensional_array "${CMAKE_CURRENT_SOURCE_DIR}/multidimensional_array.cpp")
