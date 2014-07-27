@@ -56,3 +56,6 @@ ADD_EXECUTABLE(parameters "${CMAKE_CURRENT_SOURCE_DIR}/parameters.cpp")
 
 # Test 13: multidimension array pointer/reference
 ADD_EXECUTABLE(multimensional_array "${CMAKE_CURRENT_SOURCE_DIR}/multidimensional_array.cpp")
+
+# Test 14: boost::mpl::vector asserts
+ADD_EXECUTABLE(boost_mpl_vector_assert "${CMAKE_CURRENT_SOURCE_DIR}/boost_mpl_vector_assert.cpp")
