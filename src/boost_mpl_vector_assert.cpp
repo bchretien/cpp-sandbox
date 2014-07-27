@@ -45,15 +45,17 @@ namespace test
   class Foo
   {
     // Check that F derives from F0 or F1.
-    BOOST_MPL_ASSERT((mpl::or_<is_base_of<F0, F>,
-                               is_base_of<F1, F> >));
+    BOOST_MPL_ASSERT_MSG((mpl::or_<is_base_of<F0, F>,
+                                  is_base_of<F1, F> >::value),
+                         F0_OR_F1_EXPECTED_FOR_F, (F));
 
     // Check that all the elements of CLIST derive from F0 or F1.
-    BOOST_MPL_ASSERT((mpl::fold<CLIST,
-                                mpl::bool_<true>,
-                                mpl::if_<mpl::or_<is_base_of<F0, mpl::_2>,
-                                                  is_base_of<F1, mpl::_2> >,
-                                         mpl::_1, mpl::bool_<false> > >));
+    BOOST_MPL_ASSERT_MSG((mpl::fold<CLIST,
+                                    mpl::bool_<true>,
+                                    mpl::if_<mpl::or_<is_base_of<F0, mpl::_2>,
+                                                      is_base_of<F1, mpl::_2> >,
+                                             mpl::_1, mpl::bool_<false> > >::type::value),
+                         F0_OR_F1_EXPECTED_FOR_CLIST, (CLIST));
 
   public:
     Foo () {}
