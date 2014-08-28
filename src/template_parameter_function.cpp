@@ -10,6 +10,8 @@
 #include <boost/variant/apply_visitor.hpp>
 #include <boost/function.hpp>
 #include <boost/function_types/result_type.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 
 typedef Eigen::DenseIndex size_type;
 typedef Eigen::MatrixXd matrix_t;
@@ -81,9 +83,9 @@ public:
   Visitor (F f) : f_ (f) {}
 
   template <typename U>
-  return_type operator() (const U& u) const
+  return_type operator() (const U& u)
   {
-    return (u.*f_) ();
+    return ((*u).*f_) ();
   }
 
   F f_;
@@ -92,10 +94,11 @@ public:
 
 int main()
 {
-  typedef boost::variant<Foo1, Foo2> foo_t;
+  typedef boost::variant<boost::shared_ptr<Foo1>,
+                         boost::shared_ptr<Foo2> > foo_t;
   std::vector<foo_t> v;
-  v.push_back (Foo1 ());
-  v.push_back (Foo2 ());
+  v.push_back (boost::make_shared<Foo1> ());
+  v.push_back (boost::make_shared<Foo2> ());
 
   typedef BOOST_TYPEOF(&Foo::size) fooSize_t;
   typedef BOOST_TYPEOF(&Foo::name) fooName_t;
