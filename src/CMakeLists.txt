@@ -59,3 +59,10 @@ ADD_EXECUTABLE(multimensional_array "${CMAKE_CURRENT_SOURCE_DIR}/multidimensiona
 
 # Test 14: boost::mpl::vector asserts
 ADD_EXECUTABLE(boost_mpl_vector_assert "${CMAKE_CURRENT_SOURCE_DIR}/boost_mpl_vector_assert.cpp")
+
+# Test 15: boost metaprog sandbox
+ADD_EXECUTABLE(boost_metaprog "${CMAKE_CURRENT_SOURCE_DIR}/boost_metaprog.cpp")
+
+# Test 16: use functions as template parameters
+ADD_EXECUTABLE(template_parameter_function "${CMAKE_CURRENT_SOURCE_DIR}/template_parameter_function.cpp")
+PKG_CONFIG_USE_DEPENDENCY(template_parameter_function eigen3)
