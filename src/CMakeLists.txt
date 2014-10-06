@@ -66,3 +66,6 @@ ADD_EXECUTABLE(boost_metaprog "${CMAKE_CURRENT_SOURCE_DIR}/boost_metaprog.cpp")
 # Test 16: use functions as template parameters
 ADD_EXECUTABLE(template_parameter_function "${CMAKE_CURRENT_SOURCE_DIR}/template_parameter_function.cpp")
 PKG_CONFIG_USE_DEPENDENCY(template_parameter_function eigen3)
+
+# Test 17: using Boost preprocessor to generate multiple structures
+ADD_EXECUTABLE(boost_preprocessor_structure "${CMAKE_CURRENT_SOURCE_DIR}/boost_preprocessor_structure.cpp")
